@@ -14,14 +14,14 @@ namespace TSU360.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IUserService _authService;
+        private readonly IUserService _userService;
         private readonly IValidator<RegisterDto> _validator;
 
         public AuthController(
-            IUserService authService,
+            IUserService UserService,
             IValidator<RegisterDto> validator)
         {
-            _authService = authService;
+            _userService = UserService;
             _validator = validator;
         }
 
@@ -32,14 +32,14 @@ namespace TSU360.Controllers
             if (!validationResult.IsValid)
                 return BadRequest(validationResult.Errors);
 
-            var response = await _authService.RegisterAsync(registerDto);
+            var response = await _userService.RegisterAsync(registerDto);
             return Ok(response);
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
-            var response = await _authService.LoginAsync(loginDto);
+            var response = await _userService.LoginAsync(loginDto);
             return Ok(response);
         }
 
@@ -51,7 +51,7 @@ namespace TSU360.Controllers
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized();
 
-            var profile = await _authService.GetUserProfileAsync(userId);
+            var profile = await _userService.GetUserProfileAsync(userId);
             return Ok(profile);
         }
     }

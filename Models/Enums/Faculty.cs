@@ -2,12 +2,13 @@
 {
     public enum Faculty
     {
-        Science,
+        Science ,
         Engineering,
         Medicine,
-        Arts,
+        Arts,          
         Business,
         Law,
-        Other
+        Other,
+        SoftwareEngineering  
     }
 }

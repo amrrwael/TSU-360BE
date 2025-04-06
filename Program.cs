@@ -14,8 +14,25 @@ using TSU360.Models.Enums;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5173") // Your frontend URL
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials(); // If using cookies/auth
+        });
+});
 // Add services to the container
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.SuppressModelStateInvalidFilter = true;
+    });
 
 // Configure Swagger
 builder.Services.AddEndpointsApiExplorer();
@@ -113,6 +130,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("AllowFrontend");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
@@ -159,7 +177,9 @@ async Task SeedDatabase()
                 FirstName = "Admin",
                 LastName = "User",
                 EmailConfirmed = true,
-                UserRole = UserRole.Admin
+                UserRole = UserRole.Admin,
+                Faculty = Faculty.Other,
+                Degree = Degree.Bachelor
             };
 
             var result = await userManager.CreateAsync(adminUser, "Admin@123");

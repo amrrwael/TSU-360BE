@@ -30,7 +30,14 @@ namespace TSU360.Validators
                 .InclusiveBetween(1, 5).WithMessage("Year must be between 1 and 5");
 
             RuleFor(x => x.Faculty)
-                .IsInEnum().WithMessage("Invalid faculty selection");
+             .Must(f => Enum.GetNames(typeof(Faculty)).Contains(f))
+             .WithMessage("Invalid faculty. Valid options: " +
+                         string.Join(", ", Enum.GetNames(typeof(Faculty))));
+
+            RuleFor(x => x.Degree)
+                .Must(d => Enum.GetNames(typeof(Degree)).Contains(d))
+                .WithMessage("Invalid degree. Valid options: " +
+                            string.Join(", ", Enum.GetNames(typeof(Degree))));
         }
 
         private bool BeValidBirthday(DateTime birthday)

@@ -21,7 +21,15 @@ namespace TSU360.Database
             builder.Entity<User>()
        .Property(u => u.UserRole)
        .HasConversion<string>()
-       .HasMaxLength(24); // Match the Column attribute length
+       .HasMaxLength(24);
+
+            builder.Entity<User>()
+        .Property(u => u.Faculty)
+        .HasConversion<string>();  // Store as string
+
+            builder.Entity<User>()
+                .Property(u => u.Degree)
+                .HasConversion<string>();
 
             // Configure the Event entity
             builder.Entity<Event>(entity =>

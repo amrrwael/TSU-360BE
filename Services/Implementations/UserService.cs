@@ -22,10 +22,18 @@ namespace TSU360.Services.Implementations
             _tokenService = tokenService;
         }
 
-
-        // UserService.cs
         public async Task<AuthResponseDto> RegisterAsync(RegisterDto registerDto)
         {
+
+            if (!Enum.TryParse<Faculty>(registerDto.Faculty, true, out var faculty))
+            {
+                throw new ArgumentException($"Invalid faculty value: {registerDto.Faculty}");
+            }
+
+            if (!Enum.TryParse<Degree>(registerDto.Degree, true, out var degree))
+            {
+                throw new ArgumentException($"Invalid degree value: {registerDto.Degree}");
+            }
             var user = new User
             {
                 UserName = registerDto.Email,
@@ -33,9 +41,10 @@ namespace TSU360.Services.Implementations
                 FirstName = registerDto.FirstName,
                 LastName = registerDto.LastName,
                 Birthday = registerDto.Birthday,
-                Faculty = registerDto.Faculty,
+                Faculty = faculty,
+                Degree = degree,
                 Year = registerDto.Year,
-                UserRole = UserRole.Attendee // Default role
+                UserRole = UserRole.Attendee
             };
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
@@ -66,7 +75,7 @@ namespace TSU360.Services.Implementations
 
             return new AuthResponseDto
             {
-                Token = _tokenService.GenerateToken(user), // Removed await
+                Token = _tokenService.GenerateToken(user),
                 Expiration = DateTime.UtcNow.AddMinutes(60),
                 UserId = user.Id,
                 Email = user.Email,
@@ -85,7 +94,8 @@ namespace TSU360.Services.Implementations
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Birthday = user.Birthday,
-                Faculty = user.Faculty,
+                Faculty = user.Faculty.ToString(),
+                Degree = user.Degree.ToString(),
                 Year = user.Year,
             };
         }

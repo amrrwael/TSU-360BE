@@ -1,5 +1,6 @@
 ﻿using TSU360.Models.Enums;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace TSU360.DTOs.Auth
 {
@@ -10,7 +11,8 @@ namespace TSU360.DTOs.Auth
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime Birthday { get; set; }
-        public Faculty Faculty { get; set; }
+        public string Faculty { get; set; }
+        public string Degree { get; set; }
         public int Year { get; set; }
 
     }

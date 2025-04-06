@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TSU360")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+16276d55526b9a6f4f6b780fae558c86466e3ee1")]
 [assembly: System.Reflection.AssemblyProductAttribute("TSU360")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TSU360")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

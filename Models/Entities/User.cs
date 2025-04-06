@@ -13,7 +13,9 @@ namespace TSU360.Models.Entities
         public Faculty Faculty { get; set; }
         public int Year { get; set; }
 
-        [Column(TypeName = "nvarchar(24)")] // Explicitly define column type
+        [Column(TypeName = "nvarchar(24)")] 
         public UserRole UserRole { get; set; } = UserRole.Attendee;
+
+        public Degree Degree { get; set; }
     }
 }

@@ -8,7 +8,10 @@ namespace TSU360.DTOs.Auth
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime Birthday { get; set; }
-        public Faculty Faculty { get; set; }
+        public String Faculty { get; set; }
+       
         public int Year { get; set; }
+        public string Degree { get; set; }
+
     }
 }
