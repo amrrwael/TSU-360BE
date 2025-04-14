@@ -9,5 +9,7 @@ namespace TSU360.Services.Interfaces
         Task<AuthResponseDto> RegisterAsync(RegisterDto registerDto);
         Task<AuthResponseDto> LoginAsync(LoginDto loginDto);
         Task<UserProfileDto> GetUserProfileAsync(string userId);
+        Task PromoteToCuratorAsync(string email);
+
     }
 }

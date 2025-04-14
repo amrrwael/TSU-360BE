@@ -113,5 +113,6 @@ namespace TSU360.Controllers
             var result = await _eventService.GetEventsByOrganizerAsync(userId);
             return Ok(result);
         }
+
     }
 }

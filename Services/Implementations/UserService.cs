@@ -44,7 +44,7 @@ namespace TSU360.Services.Implementations
                 Faculty = faculty,
                 Degree = degree,
                 Year = registerDto.Year,
-                UserRole = UserRole.Attendee
+                UserRole = UserRole.Attendee // Default role
             };
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
@@ -52,8 +52,8 @@ namespace TSU360.Services.Implementations
             if (!result.Succeeded)
                 throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
 
-            // Add to Identity role system
-            await _userManager.AddToRoleAsync(user, UserRole.Attendee.ToString());
+            // Assign both UserRole and Identity Role
+            await _userManager.AddToRoleAsync(user, user.UserRole.ToString());
 
             return new AuthResponseDto
             {
@@ -61,7 +61,7 @@ namespace TSU360.Services.Implementations
                 Expiration = DateTime.UtcNow.AddMinutes(60),
                 UserId = user.Id,
                 Email = user.Email,
-                UserType = UserRole.Attendee.ToString() // Return as string
+                UserType = user.UserRole.ToString()
             };
         }
 
@@ -71,7 +71,9 @@ namespace TSU360.Services.Implementations
             if (user == null || !await _userManager.CheckPasswordAsync(user, loginDto.Password))
                 throw new Exception("Invalid credentials");
 
+            // Get the highest-priority role (or first role)
             var roles = await _userManager.GetRolesAsync(user);
+            var primaryRole = roles.FirstOrDefault(); // or use logic to determine primary role
 
             return new AuthResponseDto
             {
@@ -79,7 +81,7 @@ namespace TSU360.Services.Implementations
                 Expiration = DateTime.UtcNow.AddMinutes(60),
                 UserId = user.Id,
                 Email = user.Email,
-                UserType = roles.FirstOrDefault()
+                UserType = user.UserRole.ToString() // Use the UserRole property directly
             };
         }
         public async Task<UserProfileDto> GetUserProfileAsync(string userId)
@@ -87,6 +89,9 @@ namespace TSU360.Services.Implementations
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
                 throw new Exception("User not found");
+
+            var roles = await _userManager.GetRolesAsync(user);
+            var primaryRole = roles.FirstOrDefault();
 
             return new UserProfileDto
             {
@@ -99,5 +104,22 @@ namespace TSU360.Services.Implementations
                 Year = user.Year,
             };
         }
+        public async Task PromoteToCuratorAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                throw new Exception("User not found");
+
+            // Remove all existing roles
+            var currentRoles = await _userManager.GetRolesAsync(user);
+            await _userManager.RemoveFromRolesAsync(user, currentRoles);
+
+            // Add new role to both systems
+            await _userManager.AddToRoleAsync(user, UserRole.Curator.ToString());
+            user.UserRole = UserRole.Curator;
+            await _userManager.UpdateAsync(user);
+        }
+
+
     }
 }

@@ -19,5 +19,9 @@ namespace TSU360.Models.Entities
         // Foreign key to User who created the event
         public string CreatedById { get; set; }
         public User CreatedBy { get; set; }
+
+        public ICollection<VolunteerApplication> VolunteerApplications { get; set; }
+        public ICollection<SurveyQuestion> SurveyQuestions { get; set; }
+
     }
 }

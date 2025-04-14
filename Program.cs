@@ -118,6 +118,10 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IEventService, EventService>();
+builder.Services.AddScoped<ITokenBlacklistService, TokenBlacklistService>();
+builder.Services.AddScoped<IBadgeService, BadgeService>();
+builder.Services.AddScoped<IShopService, ShopService>();
+
 
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 
@@ -130,6 +134,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<JwtBlacklistMiddleware>();
 app.UseCors("AllowFrontend");
 app.UseHttpsRedirection();
 app.UseAuthentication();
@@ -152,7 +157,6 @@ async Task SeedDatabase()
         var userManager = services.GetRequiredService<UserManager<User>>();
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
-        // Apply migrations
         await context.Database.MigrateAsync();
 
         // Seed roles
@@ -177,7 +181,7 @@ async Task SeedDatabase()
                 FirstName = "Admin",
                 LastName = "User",
                 EmailConfirmed = true,
-                UserRole = UserRole.Admin,
+                UserRole = UserRole.Admin, // Explicitly set
                 Faculty = Faculty.Other,
                 Degree = Degree.Bachelor
             };
@@ -186,6 +190,54 @@ async Task SeedDatabase()
             if (result.Succeeded)
             {
                 await userManager.AddToRoleAsync(adminUser, "Admin");
+            }
+        }
+
+        // Seed a Curator user (example)
+        var curatorEmail = "curator@tsu360.com";
+        var curatorUser = await userManager.FindByEmailAsync(curatorEmail);
+        if (curatorUser == null)
+        {
+            curatorUser = new User
+            {
+                UserName = curatorEmail,
+                Email = curatorEmail,
+                FirstName = "Curator",
+                LastName = "User",
+                EmailConfirmed = true,
+                UserRole = UserRole.Curator, // Explicitly set
+                Faculty = Faculty.Other,
+                Degree = Degree.Bachelor
+            };
+
+            var result = await userManager.CreateAsync(curatorUser, "Curator@123");
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(curatorUser, "Curator");
+            }
+        }
+
+        // Seed a Volunteer user (example)
+        var volunteerEmail = "volunteer@tsu360.com";
+        var volunteerUser = await userManager.FindByEmailAsync(volunteerEmail);
+        if (volunteerUser == null)
+        {
+            volunteerUser = new User
+            {
+                UserName = volunteerEmail,
+                Email = volunteerEmail,
+                FirstName = "Volunteer",
+                LastName = "User",
+                EmailConfirmed = true,
+                UserRole = UserRole.Volunteer, // Explicitly set
+                Faculty = Faculty.Other,
+                Degree = Degree.Bachelor
+            };
+
+            var result = await userManager.CreateAsync(volunteerUser, "Volunteer@123");
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(volunteerUser, "Volunteer");
             }
         }
     }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TSU360.Database;
 
@@ -11,9 +12,11 @@ using TSU360.Database;
 namespace TSU360.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250414082428_AddBadgesFunctionnality")]
+    partial class AddBadgesFunctionnality
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -227,51 +230,6 @@ namespace TSU360.Migrations
                     b.HasIndex("CreatedById");
 
                     b.ToTable("Events");
-                });
-
-            modelBuilder.Entity("TSU360.Models.Entities.Shop", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Shops");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000001")
-                        });
-                });
-
-            modelBuilder.Entity("TSU360.Models.Entities.ShopItem", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("ShopId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ShopId");
-
-                    b.ToTable("ShopItems");
                 });
 
             modelBuilder.Entity("TSU360.Models.Entities.SurveyQuestion", b =>
@@ -531,17 +489,6 @@ namespace TSU360.Migrations
                     b.Navigation("CreatedBy");
                 });
 
-            modelBuilder.Entity("TSU360.Models.Entities.ShopItem", b =>
-                {
-                    b.HasOne("TSU360.Models.Entities.Shop", "Shop")
-                        .WithMany("Items")
-                        .HasForeignKey("ShopId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Shop");
-                });
-
             modelBuilder.Entity("TSU360.Models.Entities.SurveyQuestion", b =>
                 {
                     b.HasOne("TSU360.Models.Entities.Event", "Event")
@@ -596,11 +543,6 @@ namespace TSU360.Migrations
                     b.Navigation("SurveyQuestions");
 
                     b.Navigation("VolunteerApplications");
-                });
-
-            modelBuilder.Entity("TSU360.Models.Entities.Shop", b =>
-                {
-                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("TSU360.Models.Entities.VolunteerApplication", b =>
